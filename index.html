@@ -57,11 +57,9 @@
       box-shadow: 0 12px 28px rgba(0,0,0,.2);
     }
 
-    /* YES IS LOCKED */
     #yes {
       background: #22c55e;
       color: white;
-      position: relative;
       z-index: 3;
     }
 
@@ -69,6 +67,11 @@
       background: #ef4444;
       color: white;
       z-index: 3;
+    }
+
+    /* invisible placeholder to preserve layout */
+    .ghost {
+      visibility: hidden;
     }
 
     #msg {
@@ -87,7 +90,7 @@
   <div class="card">
     <h1>Will you be my Valentine? 💘</h1>
 
-    <div class="btns">
+    <div class="btns" id="btnRow">
       <button id="yes">YES 💖</button>
       <button id="no">NO 🙃</button>
     </div>
@@ -98,17 +101,36 @@
   <script>
     const yes = document.getElementById("yes");
     const no  = document.getElementById("no");
+    const row = document.getElementById("btnRow");
     const msg = document.getElementById("msg");
 
-    /* ---------- NO BUTTON ESCAPE ---------- */
     let escaped = false;
+
+    function lockYesPosition() {
+      const r = yes.getBoundingClientRect();
+
+      // Insert placeholder so layout never collapses
+      const ghost = document.createElement("div");
+      ghost.className = "ghost";
+      ghost.style.width = r.width + "px";
+      ghost.style.height = r.height + "px";
+      yes.after(ghost);
+
+      // Lock YES visually
+      yes.style.position = "fixed";
+      yes.style.left = r.left + "px";
+      yes.style.top  = r.top  + "px";
+    }
 
     function moveNoAnywhere() {
       if (!escaped) {
+        lockYesPosition();
+
         const r = no.getBoundingClientRect();
         no.style.position = "fixed";
         no.style.left = r.left + "px";
         no.style.top  = r.top  + "px";
+
         escaped = true;
       }
 
@@ -136,11 +158,11 @@
     no.addEventListener("touchstart", moveNoAnywhere, { passive: true });
     no.addEventListener("click", moveNoAnywhere);
 
-    /* ---------- HEART CONFETTI (NATURAL) ---------- */
+    /* ---------- HEART CONFETTI ---------- */
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
     let hearts = [];
-    const gravity = 0.45; // normal gravity
+    const gravity = 0.45;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -151,7 +173,7 @@
 
     function launchConfetti() {
       hearts = [];
-      const count = 70; // sparse
+      const count = 70;
 
       for (let i = 0; i < count; i++) {
         hearts.push({
