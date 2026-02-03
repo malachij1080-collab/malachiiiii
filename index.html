@@ -1,112 +1,27 @@
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Valentine 💘</title>
-
+  <title>Valentine?</title>
   <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: linear-gradient(135deg, #ffd1dc, #ffb3c6);
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-    }
-
-    .card {
-      background: white;
-      padding: 36px 28px;
-      border-radius: 26px;
-      box-shadow: 0 30px 70px rgba(0,0,0,.25);
-      text-align: center;
-      width: min(560px, 92vw);
-    }
-
-    h1 {
-      font-size: clamp(36px, 6vw, 54px);
-      margin: 0 0 16px;
-    }
-
-    p {
-      font-size: clamp(18px, 3.5vw, 24px);
-      margin: 0 0 26px;
-    }
-
-    .buttons {
-      position: relative;
-      height: 100px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 22px;
-    }
-
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 18px 30px;
-      font-size: 24px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 12px 30px rgba(0,0,0,.2);
-      transition: transform .15s ease;
-    }
-
-    button:active {
-      transform: scale(.96);
-    }
-
-    #yes {
-      background: #22c55e;
-      color: white;
-    }
-
-    #no {
-      background: #ef4444;
-      color: white;
-      position: absolute;
-    }
-
-    #msg {
-      margin-top: 26px;
-      font-size: clamp(22px, 4vw, 30px);
-      font-weight: 800;
-      min-height: 34px;
-    }
-
-    /* Confetti */
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 16px;
-      top: -20px;
-      animation: fall linear forwards;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(720deg);
-        opacity: 0;
-      }
-    }
+    body{margin:0;height:100vh;display:grid;place-items:center;font-family:system-ui;background:#ffd1dc}
+    .card{background:#fff;padding:24px;border-radius:18px;box-shadow:0 18px 40px rgba(0,0,0,.18);text-align:center;width:min(520px,92vw)}
+    h1{margin:0 0 10px}
+    .btns{position:relative;height:70px;display:flex;justify-content:center;align-items:center;gap:12px;margin-top:16px}
+    button{border:0;border-radius:999px;padding:12px 18px;font-size:18px;font-weight:700;cursor:pointer}
+    #yes{background:#22c55e;color:#fff}
+    #no{background:#ef4444;color:#fff;position:absolute}
+    #msg{margin-top:16px;font-weight:700}
   </style>
 </head>
-
 <body>
-
   <div class="card">
     <h1>Will you be my Valentine? 💘</h1>
-    <p>Snacks. Good vibes. You pick the playlist.</p>
-
-    <div class="buttons" id="area">
-      <button id="yes">YES 💖</button>
-      <button id="no">NO 🙃</button>
+    <div class="btns" id="area">
+      <button id="yes">Yes 💖</button>
+      <button id="no">No 🙃</button>
     </div>
-
     <div id="msg"></div>
   </div>
 
@@ -116,63 +31,26 @@
     const yes = document.getElementById("yes");
     const msg = document.getElementById("msg");
 
-    function moveNo() {
+    function placeNo(){
       const r = area.getBoundingClientRect();
-      const pad = 10;
-      const x = Math.random() * (r.width - no.offsetWidth - pad * 2) + pad;
-      const y = Math.random() * (r.height - no.offsetHeight - pad * 2) + pad;
+      const padding = 8;
+      const x = Math.random() * (r.width - no.offsetWidth - padding*2) + padding;
+      const y = Math.random() * (r.height - no.offsetHeight - padding*2) + padding;
       no.style.left = x + "px";
-      no.style.top = y + "px";
+      no.style.top  = y + "px";
     }
 
-    window.addEventListener("load", moveNo);
-    window.addEventListener("resize", moveNo);
-    no
+    window.addEventListener("load", placeNo);
+    window.addEventListener("resize", placeNo);
 
-    <script>
-  const area = document.getElementById("area");
-  const no = document.getElementById("no");
-  const yes = document.getElementById("yes");
-  const msg = document.getElementById("msg");
+    no.addEventListener("mousemove", placeNo);
+    no.addEventListener("touchstart", placeNo, {passive:true});
+    no.addEventListener("click", placeNo);
 
-  function moveNo() {
-    const r = area.getBoundingClientRect();
-    const pad = 12;
-    const x = Math.random() * (r.width - no.offsetWidth - pad * 2) + pad;
-    const y = Math.random() * (r.height - no.offsetHeight - pad * 2) + pad;
-    no.style.left = x + "px";
-    no.style.top = y + "px";
-  }
-
-  // Initial placement
-  window.addEventListener("load", moveNo);
-  window.addEventListener("resize", moveNo);
-
-  // Desktop: runs away when cursor enters the button
-  no.addEventListener("mouseenter", moveNo);
-
-  // Mobile
-  no.addEventListener("touchstart", moveNo, { passive: true });
-  no.addEventListener("click", moveNo);
-
-  function confettiExplosion() {
-    const colors = ["#ff4d6d", "#ffd166", "#06d6a0", "#4dabf7", "#c77dff"];
-    const count = 180;
-
-    for (let i = 0; i < count; i++) {
-      const c = document.createElement("div");
-      c.className = "confetti";
-      c.style.left = Math.random() * 100 + "vw";
-      c.style.background = colors[Math.floor(Math.random() * colors.length)];
-      c.style.animationDuration = Math.random() * 2 + 2 + "s";
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 4000);
-    }
-  }
-
-  yes.addEventListener("click", () => {
-    msg.textContent = "Okay… it’s a date 💞";
-    confettiExplosion();
-  });
-</script>
+    yes.addEventListener("click", () => {
+      msg.textContent = "Okay yay. It’s a date 💞";
+    });
+  </script>
+</body>
+</html>
 
