@@ -124,7 +124,7 @@
     no.addEventListener("touchstart", moveNoAnywhere, { passive: true });
     no.addEventListener("click", moveNoAnywhere);
 
-    /* ---------- HEART CONFETTI ---------- */
+    /* ---------- HEART CONFETTI (FIXED) ---------- */
 
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
@@ -141,13 +141,15 @@
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rotation);
-      ctx.scale(size, size);
-      ctx.beginPath();
-      ctx.moveTo(0, -0.3);
-      ctx.bezierCurveTo(-0.5, -0.8, -1.2, -0.1, 0, 1);
-      ctx.bezierCurveTo(1.2, -0.1, 0.5, -0.8, 0, -0.3);
-      ctx.closePath();
       ctx.fillStyle = color;
+      ctx.beginPath();
+
+      const s = size;
+      ctx.moveTo(0, s);
+      ctx.bezierCurveTo(-s, s - s, -s * 1.4, -s * 0.2, 0, -s);
+      ctx.bezierCurveTo(s * 1.4, -s * 0.2, s, s - s, 0, s);
+
+      ctx.closePath();
       ctx.fill();
       ctx.restore();
     }
@@ -156,14 +158,14 @@
       hearts = [];
       const colors = ["#ff4d6d", "#ff758f", "#ffd1dc", "#ff8fab", "#c77dff"];
 
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < 220; i++) {
         hearts.push({
           x: Math.random() * canvas.width,
           y: Math.random() * -canvas.height,
-          size: Math.random() * 8 + 6,
-          speed: Math.random() * 3 + 2.5,
+          size: Math.random() * 10 + 8,
+          speed: Math.random() * 3 + 2,
           rotation: Math.random() * Math.PI,
-          spin: Math.random() * 0.04 - 0.02,
+          spin: Math.random() * 0.06 - 0.03,
           color: colors[Math.floor(Math.random() * colors.length)]
         });
       }
@@ -176,10 +178,10 @@
       hearts.forEach(h => {
         h.y += h.speed;
         h.rotation += h.spin;
-        drawHeart(h.x, h.y, h.size / 20, h.color, h.rotation);
+        drawHeart(h.x, h.y, h.size, h.color, h.rotation);
       });
 
-      hearts = hearts.filter(h => h.y < canvas.height + 40);
+      hearts = hearts.filter(h => h.y < canvas.height + 50);
       if (hearts.length) requestAnimationFrame(updateConfetti);
     }
 
@@ -191,4 +193,5 @@
 
 </body>
 </html>
+
 
