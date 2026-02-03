@@ -44,6 +44,7 @@
       align-items: center;
       gap: 18px;
       margin-top: 18px;
+      position: relative;
     }
 
     button {
@@ -56,8 +57,19 @@
       box-shadow: 0 12px 28px rgba(0,0,0,.2);
     }
 
-    #yes { background: #22c55e; color: white; }
-    #no  { background: #ef4444; color: white; }
+    /* YES IS LOCKED */
+    #yes {
+      background: #22c55e;
+      color: white;
+      position: relative;
+      z-index: 3;
+    }
+
+    #no {
+      background: #ef4444;
+      color: white;
+      z-index: 3;
+    }
 
     #msg {
       margin-top: 22px;
@@ -84,10 +96,11 @@
   </div>
 
   <script>
-    const no = document.getElementById("no");
     const yes = document.getElementById("yes");
+    const no  = document.getElementById("no");
     const msg = document.getElementById("msg");
 
+    /* ---------- NO BUTTON ESCAPE ---------- */
     let escaped = false;
 
     function moveNoAnywhere() {
@@ -95,41 +108,39 @@
         const r = no.getBoundingClientRect();
         no.style.position = "fixed";
         no.style.left = r.left + "px";
-        no.style.top = r.top + "px";
+        no.style.top  = r.top  + "px";
         escaped = true;
       }
 
       const yesRect = yes.getBoundingClientRect();
-      const padding = 100;
+      const safe = 120;
 
       let x, y, tries = 0;
-
       do {
-        x = Math.random() * (window.innerWidth - no.offsetWidth);
+        x = Math.random() * (window.innerWidth  - no.offsetWidth);
         y = Math.random() * (window.innerHeight - no.offsetHeight);
         tries++;
-        if (tries > 60) break;
+        if (tries > 80) break;
       } while (
-        x < yesRect.right + padding &&
-        x + no.offsetWidth > yesRect.left - padding &&
-        y < yesRect.bottom + padding &&
-        y + no.offsetHeight > yesRect.top - padding
+        x < yesRect.right  + safe &&
+        x + no.offsetWidth > yesRect.left - safe &&
+        y < yesRect.bottom + safe &&
+        y + no.offsetHeight > yesRect.top - safe
       );
 
       no.style.left = x + "px";
-      no.style.top = y + "px";
+      no.style.top  = y + "px";
     }
 
     no.addEventListener("mouseenter", moveNoAnywhere);
     no.addEventListener("touchstart", moveNoAnywhere, { passive: true });
     no.addEventListener("click", moveNoAnywhere);
 
-    /* ---------- HEART CONFETTI (SPARSER + WIDER) ---------- */
-
+    /* ---------- HEART CONFETTI (NATURAL) ---------- */
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
     let hearts = [];
-    const gravity = 0.6;
+    const gravity = 0.45; // normal gravity
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -140,15 +151,17 @@
 
     function launchConfetti() {
       hearts = [];
-      for (let i = 0; i < 80; i++) { // fewer hearts
+      const count = 70; // sparse
+
+      for (let i = 0; i < count; i++) {
         hearts.push({
-          x: Math.random() * canvas.width,          // full width spread
-          y: Math.random() * -canvas.height * 0.3,
-          size: Math.random() * 22 + 20,
-          vy: Math.random() * 5 + 6,
-          rotation: Math.random() * Math.PI,
-          spin: Math.random() * 0.06 - 0.03,
-          drift: Math.random() * 1.2 - 0.6,          // horizontal spread
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height,
+          vy: Math.random() * 2.5 + 3,
+          drift: Math.random() * 1.6 - 0.8,
+          size: Math.random() * 20 + 22,
+          rot: Math.random() * Math.PI,
+          spin: Math.random() * 0.04 - 0.02,
           char: ["💖","💘","💕","💗","💞"][Math.floor(Math.random() * 5)]
         });
       }
@@ -160,13 +173,13 @@
 
       hearts.forEach(h => {
         h.vy += gravity;
-        h.y += h.vy;
-        h.x += h.drift;
-        h.rotation += h.spin;
+        h.y  += h.vy;
+        h.x  += h.drift;
+        h.rot += h.spin;
 
         ctx.save();
         ctx.translate(h.x, h.y);
-        ctx.rotate(h.rotation);
+        ctx.rotate(h.rot);
         ctx.font = `${h.size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
         ctx.fillText(h.char, 0, 0);
         ctx.restore();
