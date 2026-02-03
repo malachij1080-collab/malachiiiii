@@ -1,1 +1,56 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    body{margin:0;height:100vh;display:grid;place-items:center;font-family:system-ui;background:#ffd1dc}
+    .card{background:#fff;padding:24px;border-radius:18px;box-shadow:0 18px 40px rgba(0,0,0,.18);text-align:center;width:min(520px,92vw)}
+    h1{margin:0 0 10px}
+    .btns{position:relative;height:70px;display:flex;justify-content:center;align-items:center;gap:12px;margin-top:16px}
+    button{border:0;border-radius:999px;padding:12px 18px;font-size:18px;font-weight:700;cursor:pointer}
+    #yes{background:#22c55e;color:#fff}
+    #no{background:#ef4444;color:#fff;position:absolute}
+    #msg{margin-top:16px;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Will you be my Valentine? 💘</h1>
+    <div class="btns" id="area">
+      <button id="yes">Yes 💖</button>
+      <button id="no">No 🙃</button>
+    </div>
+    <div id="msg"></div>
+  </div>
+
+  <script>
+    const area = document.getElementById("area");
+    const no = document.getElementById("no");
+    const yes = document.getElementById("yes");
+    const msg = document.getElementById("msg");
+
+    function placeNo(){
+      const r = area.getBoundingClientRect();
+      const padding = 8;
+      const x = Math.random() * (r.width - no.offsetWidth - padding*2) + padding;
+      const y = Math.random() * (r.height - no.offsetHeight - padding*2) + padding;
+      no.style.left = x + "px";
+      no.style.top  = y + "px";
+    }
+
+    window.addEventListener("load", placeNo);
+    window.addEventListener("resize", placeNo);
+
+    no.addEventListener("mousemove", placeNo);
+    no.addEventListener("touchstart", placeNo, {passive:true});
+    no.addEventListener("click", placeNo);
+
+    yes.addEventListener("click", () => {
+      msg.textContent = "Okay yay. It’s a date 💞";
+    });
+  </script>
+</body>
+</html>
